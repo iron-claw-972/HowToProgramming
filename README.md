@@ -1,7 +1,7 @@
 <h1> How to Programming </h1>
 
 **Made for FRC Team 972: Iron Claw, in Los Gatos High School, CA.**  
-**Authored by** [**@whackamadoodle3000**](https://github.com/whackamadoodle3000)__,__ [**@me1234q**](https://github.com/me1234q) 
+**Authored by** [**@whackamadoodle3000**](https://github.com/whackamadoodle3000)__,__ [**@me1234q**](https://github.com/me1234q)  ,  [**TsarF**](https://github.com/TsarF)
 
 ## Contents
 [Guides](#guides)   
@@ -13,7 +13,8 @@
 &emsp; [Solenoids](#use-single-acting-solenoids)  
 &emsp; [Double Solenoids](#use-a-double-solenoid)  
 &emsp; [Compressors](#use-a-compressor)  
-&emsp; [Limit Switches](#use-a-limit-switch)  
+&emsp; [Limit Switches](#use-a-limit-switch)
+&emsp; [Start Programming On Your Computer](#start-programming-on-your-device)
 
 [Examples](#examples)  
 &emsp; [Make Motor Spin Based on Joystick Input](#make-motor-spin-based-on-joystick-input)  
@@ -26,6 +27,7 @@
 
 ### Use Motors
 **Motors are one of the most common actuators and provide rotational motion. When given power, the motor will spin with speed proportional to the voltage and torque proportional to the current. They are controlled with a talon.**
+#### TalonSRX motor controllers
 - To import
 	- To import TalonSRX `import com.ctre.phoenix.motorcontrol.can.*;`
 	- To import control modes `import com.ctre.phoenix.motorcontrol.ControlMode;`
@@ -37,6 +39,23 @@
 	- Set motor to follow another `Motor.set(ControlMode.Follower, value);` with value as the id of the other talon
 - Documentation: http://www.ctr-electronics.com/downloads/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1can_1_1_w_p_i___talon_s_r_x.html
 
+#### SparkMAX motor controllers
+- To import
+	- To import SparkMAX `import com.revrobotics.CANSparkMax;`
+	- To import motor Types `import com.revrobotics.CANSparkMaxLowLevel.MotorType;`
+- To initialize
+	- To intialize SparkMAX controller `CANSparkMax <name> = new CANSparkMax(<MotorID (setup with REV Robotics SparkMAX client)>, <MotorType.kBrushless OR MotorType.kBrushed>);`
+		- There are multiple control modes for different motors because some motors are ***BRUSHED*** and some are ***BRUSHLESS*** you can tell if it is brushed or brushless by counting the wires going into the motor from the controller
+			- 3 wires: Brushless
+			- 2 wires: Brushed
+			- ***NOTE*** Some motors, like NEO motors, have 3 wires ***AND*** what may look like a 4th wire, which is actually the encoder wire, inside the protective sleeve, there are 6 more wires. DO NOT BE CONFUSED BY THAT.
+- To use
+	- To RUN the motor `CANSparkMax.set(<speed 0.0 - 1.0>);`
+	- Set Follower `CANSparkMax.follow(<motor to follow>)` or `CANSparkMax.follow(<motor to follow>, <inverted? true:false>);`
+	- Encoder `CANSparkMax.getEncoder();`
+		- Get velocity `CANSparkMax.getEncoder().getVelocity();`
+		- Get position `CANSparkMax.getEncoder().getPosotion();`
+		- SET position `CANSparkMax.getEncoder().setPosition(<position (double)>); //used for aeroid out the encoders, and resetting field position`
 ### Use Joysticks
 **Joysticks are (misleadingly) an umbrella term for all user input devices, including gamepads, joysticks, etc. Joystick objects can receive joystick and button input.**
 - To import `import edu.wpi.first.wpilibj.Joystick;`
@@ -171,6 +190,67 @@
 - To initialize `DigitalInput limitSwitch = new DigitalInput(1);`
 - To get value `limitSwitch.get()` (boolean)  
 - Documentation: http://first.wpi.edu/FRC/roborio/beta/docs/java/edu/wpi/first/wpilibj/DigitalInput.html
+
+### Start Programming On Your Device
+#### Install Git
+Here you can Install Git Desktop or Git Bash, whichever one you prefer.
+- Download link: [link](https://central.github.com/deployments/desktop/desktop/latest/win32)
+- Run the installer
+- Make sure ``Add to PATH`` option is selected
+
+#### Download and Install Java 11 SDK
+- Download the installer from this [link](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+- Run the installer, make sure ``Add to PATH`` option is selected
+- Thats it
+
+#### Setting Up Computer Vision Development Environment
+Python is usually used for computer vision stuff, it is very useful for automatic allignment
+- Download Python 3 from here: [link](https://www.python.org/ftp/python/3.7.4/python-3.7.4-amd64.exe)
+- Run the Installer
+- Ensure the ``Add to PATH`` option is selected, otherwise it will not work
+- Ensure everything is installed correctly by running ``python`` or ``python3`` in the command line
+- If an interactive python inveronment opens, you are good to go
+
+Installing OpenCV package for python
+- Open the command line once again and run ``python -m pip install`` if that fails, then run ``py -m pip install``
+- Wait for it to install, accept any warning/messages
+
+#### Installing FRC VS Code
+This IDE is different from the others as it has integrated WPI lib and vendor library manage for easier installation of new libraries for new devices.
+- You want to download the installer: [link](https://github.com/wpilibsuite/allwpilib/releases/download/v2019.4.1/WPILibInstaller_Windows64-2019.4.1.zip)
+- Extract the files to any folder of you choise and run the installer file (.msi or .exe)
+- In the installer, make sure it is installing a *NEW* version of VS CODE
+- wait for the installation to finish
+
+#### Setting up the IDE
+- Configure your settings as you wish
+- Configure the team number to 972
+#### Installing CTRE Toolsuite (Optional)
+This toolsuite is often used for configuring Driver Station dashboards, testing camera feed and configuring CAN devices
+- Get the installer zip file from here: [link](https://github.com/CrossTheRoadElec/Phoenix-Releases/releases/download/Phoenix_v5.15.0.0/CTRE.Phoenix.Framework.v5.15.0.1.zip)
+- Run the installer, it will install the following: Phoenix Tuner, Smart Dashboard
+
+#### Installing the NI Toolsuite
+This one comes with the Driver Station and RoboRIO Imaging Tool
+- Go to the following [link](http://www.ni.com/download/first-robotics-software-2017/7904/en/)
+- Click on the download link to download the latest update suite
+- Run the installers, login with the email: ``garyk@dslextreme.com`` and password: ``garyk``
+
+#### REV Robotics SparkMAX Client
+This application is used for configuring SparkMAX motor controllers, updating their firmware and running motors for testing
+- Go to the download [link](http://www.revrobotics.com/content/sw/max/client/spark-max-client-setup-1.0.0.exe)
+- Run the installer
+
+#### REV Robotics Libraries
+Used for controlling the SparkMAX motors
+- In FRC VS CODE press ``ctrl + shift + p`` to open the terminal
+- Type in ``Manage Vendor Libraries``
+- Give it this link: [https://www.revrobotics.com/content/sw/max/sdk/REVRobotics.json](https://www.revrobotics.com/content/sw/max/sdk/REVRobotics.json)
+- Press enter
+- Recompile to ensure library was installed correctly
+
+### NOTE: SOME OF THE INSTALLERS ARE DOWNLOADED AS ``.zip`` FILES WHICH YOU NEED TO EXTRACT TO INSTALL PROPERLY
+
 
 ## Examples
 

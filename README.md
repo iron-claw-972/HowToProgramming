@@ -32,7 +32,7 @@
 	- To import TalonSRX `import com.ctre.phoenix.motorcontrol.can.*;`
 	- To import control modes `import com.ctre.phoenix.motorcontrol.ControlMode;`
 - To initialize
-	- To initialize motor `WPI_TalonSRX Motor = new WPI_TalonSRX(6);`
+	- To initialize motor `TalonSRX Motor = new TalonSRX(6);`
 	- To initialize automatic deadband `Motor.enableDeadbandElimination(true);`
 - To use (with various control modes)
 	- Set motor absolute power `Motor.set(ControlMode.PercentOutput, value);` with value as double between -1 and 1

@@ -29,8 +29,9 @@
 **Motors are one of the most common actuators and provide rotational motion. When given power, the motor will spin with speed proportional to the voltage and torque proportional to the current. They are controlled with a talon.**
 
 #### TalonFX motor controllers (falcon500)
+- Note: we often use the WPI version of this class which provides more compatibility with WPI libraries. So, use the class WPI_TalonFX instead of TalonFX.
 - To import
-	- To import TalonSRX `import com.ctre.phoenix.motorcontrol.can.*;`
+	- To import TalonFX `import com.ctre.phoenix.motorcontrol.can.*;`
 	- To import control modes `import com.ctre.phoenix.motorcontrol.ControlMode;`
 - To initialize
 	- To initialize motor `TalonFX Motor = new TalonFX(6);`

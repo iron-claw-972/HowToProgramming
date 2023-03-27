@@ -5,7 +5,8 @@
 
 ## Contents
 [Guides](#guides)   
-&emsp; [Motors](#use-motors)  
+&emsp; [Motors](#use-motors)
+&emsp; [Use The Inbuilt PID in the Falcon Motors](#inbuilt-falcon-pid)    
 &emsp; [Joysticks](#use-joysticks)  
 &emsp; [Encoders](#use-external-encoders)  
 &emsp; [Built-in Accelerometer](#use-the-built-in-accelerometer)  
@@ -68,6 +69,17 @@
 		- Get velocity `CANSparkMax.getEncoder().getVelocity();`
 		- Get position `CANSparkMax.getEncoder().getPosotion();`
 		- SET position `CANSparkMax.getEncoder().setPosition(<position (double)>); //used for aeroid out the encoders, and resetting field position`
+
+### Inbuilt Falcon Pid
+**WPIlib contains the pid motor controller class and we can calculate the PID values in the rio and send them via CAN to the falcon motor. However, by doing all of this within the TalonFX motor controller, the motor controller that controls the falcon we a) do not have to send values via CAN so it is faster, and b) we can initialize multiple PIDs on one motor with their own unique kP, kI, and kD values for different tasks and can select the one desired.**
+
+#### the config_kP, config_kI, config_kD, and config_kF commands: 
+- configure the kP value for a PID: `m_motor.config_kP(PIDslot, caseOnekP);`
+- Configure the kI value for a PID: `m_motor.config_kI(PIDslot, caseOnekI);`
+- Configure the kD value for a PID: `m_motor.config_kD(PIDslot, caseOnekD);`
+- Configure the feedforward(kF) value for a PID:`m_motor.config_kF(PIDslot, caseOnekF);`
+- PIDslot is the slot(a number) that represents your PID. You refrence the number when you want to add a setpoint to that PID, for example. 
+
 ### Use Joysticks
 **Joysticks are (misleadingly) an umbrella term for all user input devices, including gamepads, joysticks, etc. Joystick objects can receive joystick and button input.**
 - To import `import edu.wpi.first.wpilibj.Joystick;`

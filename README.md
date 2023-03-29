@@ -5,8 +5,8 @@
 
 ## Contents
 [Guides](#guides)   
-&emsp; [Motors](#use-motors)
-&emsp; [Voltage Compensation](#voltage-compensation)
+&emsp; [Motors](#use-motors)   
+&emsp; [Voltage Compensation](#voltage-compensation)   
 &emsp; [Joysticks](#use-joysticks)  
 &emsp; [Encoders](#use-external-encoders)  
 &emsp; [Built-in Accelerometer](#use-the-built-in-accelerometer)  
@@ -14,10 +14,10 @@
 &emsp; [Solenoids](#use-single-acting-solenoids)  
 &emsp; [Double Solenoids](#use-a-double-solenoid)  
 &emsp; [Compressors](#use-a-compressor)  
-&emsp; [Limit Switches](#use-a-limit-switch)
-&emsp; [Start Programming On Your Computer](#start-programming-on-your-device)
+&emsp; [Limit Switches](#use-a-limit-switch)   
+&emsp; [Start Programming On Your Computer](#start-programming-on-your-device)   
 
-[PID](#PID)
+[PID](#PID)   
 &emsp; [Use The Inbuilt PID in the Falcon Motors](#inbuilt-falcon-pid)    
 
 

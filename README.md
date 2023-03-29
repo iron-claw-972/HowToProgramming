@@ -6,7 +6,7 @@
 ## Contents
 [Guides](#guides)   
 &emsp; [Motors](#use-motors)
-&emsp; [Use The Inbuilt PID in the Falcon Motors](#inbuilt-falcon-pid)    
+&emsp; [Voltage Compensation](#voltage-compensation)
 &emsp; [Joysticks](#use-joysticks)  
 &emsp; [Encoders](#use-external-encoders)  
 &emsp; [Built-in Accelerometer](#use-the-built-in-accelerometer)  
@@ -16,6 +16,10 @@
 &emsp; [Compressors](#use-a-compressor)  
 &emsp; [Limit Switches](#use-a-limit-switch)
 &emsp; [Start Programming On Your Computer](#start-programming-on-your-device)
+
+[PID](#PID)
+&emsp; [Use The Inbuilt PID in the Falcon Motors](#inbuilt-falcon-pid)    
+
 
 [Examples](#examples)  
 &emsp; [Make Motor Spin Based on Joystick Input](#make-motor-spin-based-on-joystick-input)  
@@ -39,7 +43,6 @@
 - To use
 	- Set motor absolute power `Motor.set(ControlMode.PercentOutput, value);` with value as double between -1 and 1
 	- Set motor to follow another `Motor.set(ControlMode.Follower, value);` with value as the id of the other talon
-
 #### TalonSRX motor controllers
 - To import
 	- To import TalonSRX `import com.ctre.phoenix.motorcontrol.can.*;`
@@ -70,6 +73,14 @@
 		- Get position `CANSparkMax.getEncoder().getPosotion();`
 		- SET position `CANSparkMax.getEncoder().setPosition(<position (double)>); //used for aeroid out the encoders, and resetting field position`
 
+### Voltage Compensation
+**Voltage Compensation allows your motor to run with the same amount of power with less battery voltage**
+- To use, make SURE your set the max voltage of your battery before your enable voltage compensation. This lets the TalonFX know the maximum voltage to apply to the motor `m_motor.configVoltageCompSaturation(Constants.kRobotVoltage);`
+- To enable voltage compensation `m_motor.enableVoltageCompensation(true);`
+
+
+## PID
+
 ### Inbuilt Falcon Pid
 **WPIlib contains the pid motor controller class and we can calculate the PID values in the rio and send them via CAN to the falcon motor. However, by doing all of this within the TalonFX motor controller, the motor controller that controls the falcon we a) do not have to send values via CAN so it is faster, and b) we can initialize multiple PIDs on one motor with their own unique kP, kI, and kD values for different tasks and can select the one desired.**
 
@@ -79,6 +90,7 @@
 - Configure the kD value for a PID: `m_motor.config_kD(PIDslot, caseOnekD);`
 - Configure the feedforward(kF) value for a PID:`m_motor.config_kF(PIDslot, caseOnekF);`
 - PIDslot is the slot(a number) that represents your PID. You refrence the number when you want to add a setpoint to that PID, for example. 
+- caseOnePIDkP, caseOnPIDkI, caseOnePIDkD, and caseOnekF are all constants for a specific PID
 
 ### Use Joysticks
 **Joysticks are (misleadingly) an umbrella term for all user input devices, including gamepads, joysticks, etc. Joystick objects can receive joystick and button input.**
@@ -118,6 +130,16 @@
 	- `talon.getSensorCollection().getQuadraturePosition();`
 	- `talon.getSensorCollection().getQuadratureVelocity();`
 - Documentation: http://www.ctr-electronics.com/downloads/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1_sensor_collection.html
+
+### Use Absolute Encoders
+**These encoders tell you the encoder position but they do NOT get reset every time we power on the robot. The encoder remembers it's position. These encoders give you values in ROTATIONS. One 360 degree rotation of the encoder is one rotation. As we rotate an absolute encoder past 360 degrees, the value gets reset to 1 rotation and goes down from there. Therefore it is important to position an absolute encoder such that the reset does not happen.**
+- Import the library `import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;`
+- To create the encoder  `DutyCycleEncoder m_absoluteEncoder = new DutyCycleEncoder(roborio_DIO_port_the_encoder_is_plugged_into);`
+- To get the encoder distance(will be in ROTATIONS) `m_absoluteEncoder.getDistance()`
+- There are other useful functions available to you. 
+- Documentation(scroll down): https://docs.wpilib.org/en/stable/docs/software/hardware-apis/sensors/encoders-software.html
+
+
 ### Use the Built-in Accelerometer
 **This is the RoboRio's built-in accelerometer. It allows you to get the acceleration in the x, y, and z directions.**
 - To import `import edu.wpi.first.wpilibj.BuiltInAccelerometer;`

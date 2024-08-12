@@ -28,46 +28,39 @@
 ### Use Motors
 **Motors are one of the most common actuators and provide rotational motion. When given power, the motor will spin with speed proportional to the voltage and torque proportional to the current. They are controlled with a talon.**
 
-#### TalonFX motor controllers (falcon500)
-- Note: we often use the WPI version of this class which provides more compatibility with WPI libraries. So, use the class WPI_TalonFX instead of TalonFX.
+#### TalonFX motor controllers (falcon500 and kraken x60)
 - To import
-	- To import TalonFX `import com.ctre.phoenix.motorcontrol.can.*;`
-	- To import control modes `import com.ctre.phoenix.motorcontrol.ControlMode;`
+	- To import TalonFX `import com.ctre.phoenix6.hardware.TalonFX;`
 - To initialize
-	- To initialize motor `TalonFX Motor = new TalonFX(6);`
+	- To initialize motor `TalonFX motor = new TalonFX(6);`
 - To use
-	- Set motor absolute power `Motor.set(ControlMode.PercentOutput, value);` with value as double between -1 and 1
-	- Set motor to follow another `Motor.set(ControlMode.Follower, value);` with value as the id of the other talon
+	- Set motor absolute power `motor.set(value);` with value as double between -1 and 1
+	- Set motor to follow another `motor.setControl(new Follower(id, opposeDirection));` with id as the id of the other talon. opposeDirection is a boolean indicating whether or not this motor should oppose the direction of the motor it follows
+- To use encoder
+	- Get position in rotations `motor.getPosition().getValue();`
+	- Get velocity (speed) in rotations per second `motor.getVelocity().getValue();`
+	- Set position `motor.setPosition(value)` where value is the new position in rotations
 
-#### TalonSRX motor controllers
+#### SparkMax/SparkFlex motor controllers
 - To import
-	- To import TalonSRX `import com.ctre.phoenix.motorcontrol.can.*;`
-	- To import control modes `import com.ctre.phoenix.motorcontrol.ControlMode;`
-- To initialize
-	- To initialize motor `TalonSRX Motor = new TalonSRX(6);`
-	- To initialize automatic deadband `Motor.enableDeadbandElimination(true);`
-- To use (with various control modes)
-	- Set motor absolute power `Motor.set(ControlMode.PercentOutput, value);` with value as double between -1 and 1
-	- Set motor to follow another `Motor.set(ControlMode.Follower, value);` with value as the id of the other talon
-- Documentation: http://www.ctr-electronics.com/downloads/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1can_1_1_w_p_i___talon_s_r_x.html
-
-#### SparkMAX motor controllers
-- To import
-	- To import SparkMAX `import com.revrobotics.CANSparkMax;`
+	- To import SparkMax `import com.revrobotics.CANSparkMax;`
+	- To import SparkFlex `import com.revrobotics.CANSparkFlex;`
 	- To import motor Types `import com.revrobotics.CANSparkMaxLowLevel.MotorType;`
 - To initialize
-	- To intialize SparkMAX controller `CANSparkMax <name> = new CANSparkMax(<MotorID (setup with REV Robotics SparkMAX client)>, <MotorType.kBrushless OR MotorType.kBrushed>);`
+	- To intialize SparkMax controller `CANSparkMax <name> = new CANSparkMax(<MotorID>, <MotorType.kBrushless OR MotorType.kBrushed>);`
+	- To intialize SparkFlex controller `CANSparkFlex <name> = new CANSparkFlex(<MotorID>, <MotorType.kBrushless OR MotorType.kBrushed>);`
 		- There are multiple control modes for different motors because some motors are ***BRUSHED*** and some are ***BRUSHLESS*** you can tell if it is brushed or brushless by counting the wires going into the motor from the controller
 			- 3 wires: Brushless
 			- 2 wires: Brushed
 			- ***NOTE*** Some motors, like NEO motors, have 3 wires ***AND*** what may look like a 4th wire, which is actually the encoder wire, inside the protective sleeve, there are 6 more wires. DO NOT BE CONFUSED BY THAT.
 - To use
-	- To RUN the motor `CANSparkMax.set(<speed 0.0 - 1.0>);`
-	- Set Follower `CANSparkMax.follow(<motor to follow>)` or `CANSparkMax.follow(<motor to follow>, <inverted? true:false>);`
-	- Encoder `CANSparkMax.getEncoder();`
-		- Get velocity `CANSparkMax.getEncoder().getVelocity();`
-		- Get position `CANSparkMax.getEncoder().getPosotion();`
-		- SET position `CANSparkMax.getEncoder().setPosition(<position (double)>); //used for aeroid out the encoders, and resetting field position`
+	- To RUN the motor `motor.set(<speed 0.0 - 1.0>);`
+	- Set Follower `motor.follow(<motor to follow>)` or `motor.follow(<motor to follow>, <inverted? true:false>);`
+	- Encoder `motor.getEncoder();`
+		- Get velocity `motor.getEncoder().getVelocity();`
+		- Get position `motor.getEncoder().getPosotion();`
+		- SET position `motor.getEncoder().setPosition(<position (double)>); //used for aeroid out the encoders, and resetting field position`
+
 ### Use Joysticks
 **Joysticks are (misleadingly) an umbrella term for all user input devices, including gamepads, joysticks, etc. Joystick objects can receive joystick and button input.**
 - To import `import edu.wpi.first.wpilibj.Joystick;`
@@ -98,14 +91,6 @@
 	- To see if the encoder is stopped turning `boolean stopped = sampleEncoder.getStopped();`
 - Documentation: http://first.wpi.edu/FRC/roborio/release/docs/java/edu/wpi/first/wpilibj/Encoder.html
 - More info: https://wpilib.screenstepslive.com/s/currentCS/m/java/l/599717-encoders-measuring-rotation-of-a-wheel-or-other-shaft
-### Use Talon Encoders
-**These encoders function the same as [external encoders](#use-encoders), but are connected to the talon's encoder port and thus can be directly accessed from the talon object.**
-- To import `import com.ctre.phoenix.motorcontrol.FeedbackDevice;`
-- To initialize `talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);`
-- To use 
-	- `talon.getSensorCollection().getQuadraturePosition();`
-	- `talon.getSensorCollection().getQuadratureVelocity();`
-- Documentation: http://www.ctr-electronics.com/downloads/api/java/html/classcom_1_1ctre_1_1phoenix_1_1motorcontrol_1_1_sensor_collection.html
 ### Use the Built-in Accelerometer
 **This is the RoboRio's built-in accelerometer. It allows you to get the acceleration in the x, y, and z directions.**
 - To import `import edu.wpi.first.wpilibj.BuiltInAccelerometer;`
@@ -269,14 +254,14 @@ Used for controlling the SparkMAX motors
 #### Make Motor Spin based on Joystick Input　
 
 ```java
-package org.usfirst.frc.team972.robot;
+package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.*;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 
-public class Robot extends IterativeRobot {
-	WPI_TalonSRX motor = new WPI_TalonSRX(6); //initialize motor
+public class Robot extends TimedRobot {
+	TalonFX motor = new TalonFX(6); //initialize motor
 	Joystick joy = new Joystick(0); //initialize joystick (to find number, check driver station)
 	double powerMultiplier = 0.7; //scales down motor power
 
@@ -287,8 +272,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		//This function is called periodically during teleoperated control
 		double joystickValue = joy.getRawAxis(1); //find axis number in driver station
-		System.out.println("Joy: " + joystickValue);
-		Motor.set(joystickValue*powerMultiplier); //scale down by powerMultiplier
+		motor.set(joystickValue*powerMultiplier); //scale down by powerMultiplier
 	}
 }
 ```
@@ -297,26 +281,22 @@ public class Robot extends IterativeRobot {
 #### Arcade Drive　
 
 ```java
-package org.usfirst.frc.team972.robot;
+package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.*;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 
 	/* talons for arcade drive */
-	WPI_TalonSRX _frontLeftMotor = new WPI_TalonSRX(6);
-	WPI_TalonSRX _frontRightMotor = new WPI_TalonSRX(2);
+	TalonFX _frontLeftMotor = new TalonFX(6);
+	TalonFX _frontRightMotor = new TalonFX(2);
 
-	/* extra talons and victors for six motor drives */
-	WPI_TalonSRX _leftSlave1 = new WPI_TalonSRX(5);
-	WPI_VictorSPX _rightSlave1 = new WPI_VictorSPX(7);
-	WPI_TalonSRX _leftSlave2 = new WPI_TalonSRX(4);
-	WPI_VictorSPX _rightSlave2 = new WPI_VictorSPX(17);
-
-	DifferentialDrive _drive = new DifferentialDrive(_frontLeftMotor, _frontRightMotor);
+	/* extra talons for four motor drives */
+	TalonFX _leftSlave = new TalonFX(5);
+	TalonFX _rightSlave = new TalonFX(4);
 
 	Joystick _joy = new Joystick(0);
 
@@ -329,21 +309,16 @@ public class Robot extends IterativeRobot {
 		 * take our extra talons and just have them follow the Talons updated in
 		 * arcadeDrive
 		 */
-		_leftSlave1.follow(_frontLeftMotor);
-		_leftSlave2.follow(_frontLeftMotor);
-		_rightSlave1.follow(_frontRightMotor);
-		_rightSlave2.follow(_frontRightMotor);
+		_leftSlave.setControl(new Follower(_frontLeftMotor.getDeviceID(), false));
+		_rightSlave.follow(new Follower(_frontRightMotor.getDeviceID(), false));
 
 		/* drive robot forward and make sure all 
 		 * motors spin the correct way.
-		 * Toggle booleans accordingly.... */
+		 * Toggle booleans accordingly 
+		 * Also toggle booleans above for followers*/
 		_frontLeftMotor.setInverted(false);
-		_leftSlave1.setInverted(false);
-		_leftSlave2.setInverted(false);
 		
 		_frontRightMotor.setInverted(false);
-		_rightSlave1.setInverted(false);
-		_rightSlave2.setInverted(false);
 	}
 
 	/**
@@ -362,13 +337,8 @@ public class Robot extends IterativeRobot {
 			/* within 10% joystick, make it zero */
 			turn = 0;
 		}
-		/* print the joystick values to sign them, comment
-		 * out this line after checking the joystick directions. */
-		System.out.println("JoyY:" + forward + "  turn:" + turn );
-		/* drive the robot, when driving forward one side will be red.  
-		 * This is because DifferentialDrive assumes 
-		 * one side must be negative */
-		_drive.tankDrive(forward, turn);
+		_frontLeftMotor.set(forward + turn);
+		_frontRightMotor.set(forward - turn);
 	}
 }
 ```
@@ -376,58 +346,52 @@ public class Robot extends IterativeRobot {
 #### Tank Drive　
 
 ```java
-package org.usfirst.frc.team972.robot;
+package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.*;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 
 	/* talons for arcade drive */
-	WPI_TalonSRX _frontLeftMotor = new WPI_TalonSRX(6);
-	WPI_TalonSRX _frontRightMotor = new WPI_TalonSRX(2);
+	TalonFX _frontLeftMotor = new TalonFX(6);
+	TalonFX _frontRightMotor = new TalonFX(2);
 
-	/* extra talons and victors for six motor drives */
-	WPI_TalonSRX _leftSlave1 = new WPI_TalonSRX(5);
-	WPI_VictorSPX _rightSlave1 = new WPI_VictorSPX(7);
-	WPI_TalonSRX _leftSlave2 = new WPI_TalonSRX(4);
-	WPI_VictorSPX _rightSlave2 = new WPI_VictorSPX(17);
+	/* extra talons for four motor drives */
+	TalonFX _leftSlave = new TalonFX(5);
+	TalonFX _rightSlave = new TalonFX(4);
 
-	DifferentialDrive _drive = new DifferentialDrive(_frontLeftMotor, _frontRightMotor);
+	Joystick _joy = new Joystick(0);
 
-	Joystick leftJoy = new Joystick(0);
-	Joystick rightJoy = new Joystick(1);
-
-	//This function is run when the robot is first started up and should be used for any initialization code.
-	
+	/**
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code.
+	 */
 	public void robotInit() {
-		//take our extra talons and just have them follow the Talons updated in
-		_leftSlave1.follow(_frontLeftMotor);
-		_leftSlave2.follow(_frontLeftMotor);
-		_rightSlave1.follow(_frontRightMotor);
-		_rightSlave2.follow(_frontRightMotor);
+		/*
+		 * take our extra talons and just have them follow the Talons updated in
+		 * arcadeDrive
+		 */
+		_leftSlave.setControl(new Follower(_frontLeftMotor.getDeviceID(), false));
+		_rightSlave.follow(new Follower(_frontRightMotor.getDeviceID(), false));
 
 		/* drive robot forward and make sure all 
 		 * motors spin the correct way.
-		 * Toggle booleans accordingly.... */
+		 * Toggle booleans accordingly 
+		 * Also toggle booleans above for followers*/
 		_frontLeftMotor.setInverted(false);
-		_leftSlave1.setInverted(false);
-		_leftSlave2.setInverted(false);
 		
 		_frontRightMotor.setInverted(false);
-		_rightSlave1.setInverted(false);
-		_rightSlave2.setInverted(false);
 	}
 
 	/**
 	 * This function is called periodically during operator control
 	 */
 	public void teleopPeriodic() {
-	
-		double right = rightJoy.getY();
-		double left =  leftjoy.getY();
+		double right = -rightJoy.getY();
+		double left =  -leftjoy.getY();
 		/* deadband */
 		if (Math.abs(left) < 0.10) {
 			/* within 10% joystick, make it zero */
@@ -437,22 +401,20 @@ public class Robot extends IterativeRobot {
 			/* within 10% joystick, make it zero */
 			right = 0;
 		}
-		/* print the joystick values to sign them, comment
-		 * out this line after checking the joystick directions. */
-		System.out.println("Left: " + left + "  Right:" + right );
-		_drive.tankDrive(left, right);
+		_frontLeftMotor.set(left);
+		_frontRightMotor.set(right);
 	}
 }
 ```
 #### PID Example Snippet
 
 ```java
-//At top:
+// This is included as a simplified version of how WPI's PIDController works. You should use that instead of this.
 
 
-double proportionFactor = 0.2; //These values should be tuned to be the most efficient.
-double integralFactor = 0.2;
-double derivativeFactor = 0.2;
+double proportionFactor = 0.1; //These values should be tuned to be the most efficient.
+double integralFactor = 0;
+double derivativeFactor = 0.05;
 double marginOfError = 0.01;
 
 double actual = 1; //Change based on situation
@@ -462,7 +424,7 @@ double priorActual = actual;
 double integral = 0;
 double error = desired - actual;
 
-Repeated loop (like slow or fast periodic) {
+public double calculate () {
 	priorActual = actual;
 	actual = <get sensor data>;
 	error = desired - actual;
@@ -473,21 +435,21 @@ Repeated loop (like slow or fast periodic) {
 	}
 	return proportionFactor*error + integralFactor*integral + derivativeFactor*(actual-priorActual);
 }
-
 ```
+
 #### Toggling Double Solenoids  
 
 ```java
-package org.usfirst.frc.team972.robot;
+package frc.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.*;
 
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 
 	Compressor com = new Compressor(40);
-	DoubleSolenoid sol = new Double Solenoid(1, 2);
+	DoubleSolenoid sol = new DoubleSolenoid(1, 2);
 
 	Joystick joy = new Joystick(1);
 
@@ -514,4 +476,4 @@ public class Robot extends IterativeRobot {
 }
 ```
 <hr />
-Last Edit on January 26, 2019
+Last Edit on August 12, 2024
